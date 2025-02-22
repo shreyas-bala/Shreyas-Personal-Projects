@@ -1,0 +1,16 @@
+# Implement FFT by manually managing complex number calculations
+def FFT(x):
+    N = len(x)
+    if N <= 1:
+        return x
+    else:
+        x_even = FFT(x[0::2])
+        x_odd = FFT(x[1::2])
+        T = [[math.cos(2 * math.pi * k / N), -math.sin(2 * math.pi * k / N)] for k in range(N // 2)]
+        factor = [multiply(T[k], x_odd[k]) for k in range(N // 2)]
+        return [add(x_even[k], factor[k]) for k in range(N // 2)] + \
+               [subtract(x_even[k], factor[k]) for k in range(N // 2)]
+# Convert ECG signal to complex format
+ecg_signal_complex = [[val, 0.0] for val in ecg_signal]
+# Apply FFT
+fft_result = FFT(ecg_signal_complex)
