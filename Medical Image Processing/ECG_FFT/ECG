@@ -1,0 +1,16 @@
+import math
+import random
+import matplotlib.pyplot as plt
+# Number of samples and sample rate
+num_samples = 1024  # Ensure this is a power of 2
+sample_rate = 500  # in Hz
+# Time vector
+t = [i/sample_rate for i in range(num_samples)]
+# A basic synthetic ECG signal generator
+def synthetic_ecg(t):
+    ecg = [math.sin(2.0 * math.pi * 1.0 * tt) + 0.5 * math.sin(2.0 * math.pi * 7.0 * tt) for tt in t]
+    noise = [random.uniform(-0.5, 0.5) for _ in t]
+    ecg = [sum(x) for x in zip(ecg, noise)]
+    return ecg
+
+ecg_signal = synthetic_ecg(t)
