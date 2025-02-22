@@ -14,3 +14,8 @@ def FFT(x):
 ecg_signal_complex = [[val, 0.0] for val in ecg_signal]
 # Apply FFT
 fft_result = FFT(ecg_signal_complex)
+# Compute magnitudes
+magnitudes = [math.sqrt(val[0]**2 + val[1]**2) for val in fft_result]
+# Display results
+for i in range(len(fft_result)):
+    print(f"Frequency component {i}: Magnitude {magnitudes[i]:.2f}")
