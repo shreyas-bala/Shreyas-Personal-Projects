@@ -1,0 +1,51 @@
+!pip install pydicom
+import pydicom
+from pydicom.dataelem import DataElement
+def imp_di_tags(ds):
+imp_tags=[(0x0010,0x0010),#Patient Name
+(0x0010,0x0020),#Patient ID
+(0x0010,0x0030),#Patient DOB
+(0x0010,0x0040),#Patient Sex
+(0x0008,0x0020),#Study Date
+(0x0008,0x0030),#Study Time
+(0x0008,0x0060),#Modality
+(0x0008,0x0070),#Manufacturer
+(0x0008,0x1090),#Manufacturer's Model Name
+(0x0020,0x000D),#Study Instance UID
+(0x0020,0x000E),#Series Instance UID
+(0x0020,0x0011),#Series Number
+(0x0020,0x0013),#Image Number
+(0x0028,0x0010),#Rows
+(0x0028,0x0011),#Columns
+(0x0010,0x1060)]
+for tag in imp_tags:
+if tag in ds:
+element=ds[tag]
+print(f"{tag}:{element.name}={element.value}")
+else:
+print(f"{tag} : Not found")
+def load_img(filename):
+ds=pydicom.dcmread(filename)
+return ds
+def new_tag(name,value):
+new_elem=DataElement((0x0010,0x1060),name,value)
+ds.add(new_elem)
+def del_elem(tag_tup):
+if tag_tup in ds:
+del ds[tag_tup[0],tag_tup[1]]
+#__main__
+fil='MRBRAIN.DCM'
+ds=load_img(fil)
+imp_di_tags(ds)
+print()
+new_tag('Patient AAdhar number','662847295937')
+imp_di_tags(ds)
+wat_den=float(input("enter the water denstity u wish"))
+def unit_to_pixel(hu):
+  pix=int((hu*wat_den)/1000+wat_den)
+  return pix
+def pixel_to_unit(pix):
+  hu=int(((pix-wat_den)/wat_den)*1000)
+  return hu
+print(pixel_to_unit(50))
+print(unit_to_pixel(-8))
