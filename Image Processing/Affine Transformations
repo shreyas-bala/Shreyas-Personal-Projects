@@ -1,0 +1,73 @@
+import numpy as np
+import cv2
+import matplotlib.pyplot as plt
+from google.colab.patches import cv2_imshow
+import math
+#image scanning
+color_image=cv2.imread('/content/Screenshot (1).png')
+img=cv2.cvtColor(color_image, cv2.COLOR_BGR2GRAY)
+img_arr=np.array(img)
+h,w=img_arr.shape[0],img_arr.shape[1]
+#print(img_arr.shape,h,w)
+#Transformation matrix
+trans_mat=np.array([[1,0,0],
+[0,1,0],
+[0,0,1]])
+
+finh,finw=h,w
+def translation(tx,ty):
+  global trans_mat
+  global finh
+  global finw
+  finh,finw=finh+tx,finw+ty
+  trans_mat=np.dot(trans_mat,np.array([[1,0,tx],
+  [0,1,ty],
+  [0,0,1]]))
+
+def scaling(sx,sy):
+  global trans_mat
+  global finh
+  global finw
+  finh,finw=int(finh*sx),int(finw*sy)
+  st_x,st_y=finh/h,finw/w
+  trans_mat=np.dot(trans_mat,np.array([[st_x,0,0],
+  [0,st_y,0],
+  [0,0,1]]))
+
+def rotation(theta):
+  global trans_mat
+  global finh
+  global finw
+  ang=math.pi*theta/180
+  finh,finw=int(finh*np.cos(ang)+finw*np.sin(ang)),int(finh*np.sin(ang)+finw*np.cos(ang))
+  trans_mat=np.dot(trans_mat,np.array([[np.cos(ang),-np.sin(ang),0],
+  [np.sin(ang),np.cos(ang),0],
+  [0,0,1]]))
+
+def skew(skx,sky):
+  global trans_mat
+  global finh
+  global finw
+  finh,finw=int(finh+finw*skx),int(finw+finh*sky)
+  trans_mat=np.dot(trans_mat,np.array([[1,skx,0],
+  [sky,1,0],
+  [0,0,1]]))
+
+def affine_transformation():
+  global trans_mat
+  global finh
+  global finw
+  global img
+  final_img=np.zeros((finh,finw))
+  for row in range(h):
+    for col in range(w):
+      fin_coord=np.dot(trans_mat,np.array([row,col,1]))
+      x_,y_=int(fin_coord[0]),int(fin_coord[1])
+      final_img[x_,y_]=img[row,col]
+  cv2_imshow(final_img)
+#__main__
+scaling(int(input("Enter scaling factor x")),int(input("Enter scaling factory")))
+translation(int(input("Enter translating factor x")),int(input("Entertranslating factor y")))
+skew(int(input("Enter skewing factor x")),int(input("Enter skewing factory")))
+rotation(int(input("Enter angle of rotation")))
+affine_transformation()
